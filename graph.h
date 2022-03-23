@@ -13,12 +13,12 @@ typedef enum {
     EINVARG
 } GRAPH_ERR;
 
-graph *Init_Graph(int size);
+graph *Init_Graph(int size, GRAPH_ERR *err);
 
-void Remove_Graph(graph *graph);
+void Remove_Graph(graph *graph, GRAPH_ERR *err);
 
-int Pop_Edge(graph *graph, int i, int j);
+int Pop_Edge(graph *graph, int i, int j, GRAPH_ERR *err);
 
-void Push_Edge(graph *graph, int val, int i, int j);
+void Push_Edge(graph *graph, int val, int i, int j, GRAPH_ERR *err);
 
 #endif  // _GRAPH_H_
