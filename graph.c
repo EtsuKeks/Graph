@@ -4,16 +4,10 @@
 #include <unistd.h>
 #include <stdio.h>
 
-graph *Init_Graph(int size, GRAPH_ERR *err) {
-    if (size < 0) {
-        fprintf(stderr, "Invalid argument: size\n");
-        if (err != NULL) {
-            *err = EINVARG;
-        }
-        return NULL;
-    }
+graph *Init_Graph(GRAPH_ERR *err) {
 
     graph *cgraph = (graph *)malloc(sizeof(graph));
+
     if (cgraph == NULL) {
         fprintf(stderr, "Not enough memory\n");
         if (err != NULL) {
@@ -22,7 +16,8 @@ graph *Init_Graph(int size, GRAPH_ERR *err) {
         return NULL;
     }
 
-    cgraph->arr = (int *)malloc(sizeof(int) * size * size);
+    cgraph->arr = (int *)malloc(0 * (sizeof(int)));
+
     if (cgraph->arr == NULL) {
         fprintf(stderr, "Not enough memory\n");
         if(err != NULL) {
@@ -31,17 +26,14 @@ graph *Init_Graph(int size, GRAPH_ERR *err) {
         return NULL;
     }
 
-    cgraph->size = size;
-
-    for (int i = 0; i < size * size; ++i) {
-        cgraph->arr[i] = -1;
-    }
+    cgraph->size = 0;
 
     *err = ESUCCESS;
     return cgraph;
 }
 
 void Remove_Graph(graph *graph, GRAPH_ERR *err) {
+
     if (graph == NULL) {
         fprintf(stderr, "Invalid argument: graph\n");
         if(err != NULL) {
@@ -49,16 +41,17 @@ void Remove_Graph(graph *graph, GRAPH_ERR *err) {
         }
         return;
     }
+
     if (graph->arr) {
         free(graph->arr);
     }
+
     free(graph);
     *err = ESUCCESS;
 }
 
-
-
 void Push_Edge(graph *graph, int val, int i, int j, GRAPH_ERR *err) {
+
     if (graph == NULL) {
         fprintf(stderr, "Invalid argument: graph\n");
         if (err != NULL) {
@@ -67,15 +60,7 @@ void Push_Edge(graph *graph, int val, int i, int j, GRAPH_ERR *err) {
         return;
     }
 
-    if (graph->size == 0) {
-        fprintf(stderr, "Graph is empty\n");
-        if (err != NULL) {
-            *err = EEMPTY;
-        }
-        return;
-    }
-
-    if (i > graph->size || i <= 0) {
+    if (i <= 0) {
         fprintf(stderr, "Invalid argument: i\n");
         if (err != NULL) {
             *err = EINVARG;
@@ -83,7 +68,7 @@ void Push_Edge(graph *graph, int val, int i, int j, GRAPH_ERR *err) {
         return;
     }
 
-    if (j > graph->size || j <= 0) {
+    if (j <= 0) {
         fprintf(stderr, "Invalid argument: j\n");
         if (err != NULL) {
             *err = EINVARG;
@@ -91,27 +76,48 @@ void Push_Edge(graph *graph, int val, int i, int j, GRAPH_ERR *err) {
         return;
     }
 
-    if (val < 0) {
-        fprintf(stderr, "Invalid argument: val; It's not allowed to set val < 0");
-        if (err != NULL) {
-            *err = EINVARG;
+    if (graph->size < i || graph->size < j) {
+        int max;
+        if (i < j) {
+            max = j;
+        } else {
+            max = i;
         }
-        return;
+        graph->arr = (int *) realloc(graph->arr,2 * (max * max) * sizeof(int));
+
+        if (graph->arr == NULL) {
+            fprintf(stderr, "Not enough memory\n");
+            if(err != NULL) {
+                *err = EMALLOC;
+            }
+            return;
+        }
+
+        for (int k = 2 * graph->size * graph->size; k < 2 * max * max; ++k) {
+            if (k % 2 == 0) {
+                graph->arr[k] = -1;
+            } else {
+                graph->arr[k] = 0;
+            }
+        }
+        graph->size = max;
     }
 
     int temp;
     if (i < j) {
-        temp = (j - 1) * (j - 1) + i - 1;
+        temp = 2 * ((j - 1) * (j - 1) + i - 1);
     } else if (j < i) {
-        temp = i * (i - 1) + j - 1;
+        temp = 2 * (i * (i - 1) + j - 1);
     } else {
-        temp = i * i - 1;
+        temp = 2 * (i * i - 1);
     }
     *err = ESUCCESS;
     graph->arr[temp] = val;
+    graph->arr[temp + 1] = 1;
 }
 
 int Pop_Edge(graph *graph, int i, int j, GRAPH_ERR *err) {
+
     if (graph == NULL) {
         fprintf(stderr, "Invalid argument: graph\n");
         if (err != NULL)
@@ -119,12 +125,6 @@ int Pop_Edge(graph *graph, int i, int j, GRAPH_ERR *err) {
         return INT_MAX;
     }
 
-    if (graph->size == 0) {
-        fprintf(stderr, "Graph is empty\n");
-        if (err != NULL)
-            *err = EEMPTY;
-        return INT_MAX;
-    }
     if (i > graph->size || i <= 0) {
         fprintf(stderr, "Invalid argument: i\n");
         if (err != NULL) {
@@ -138,22 +138,25 @@ int Pop_Edge(graph *graph, int i, int j, GRAPH_ERR *err) {
         if (err != NULL) {
             *err = EINVARG;
         }
-    return INT_MAX;
+        return INT_MAX;
     }
 
     int temp;
     if (i < j) {
-        temp = (j - 1) * (j - 1) + i - 1;
-    } else if (j > i) {
-        temp = i * (i - 1) + j - 1;
+        temp = 2 * ((j - 1) * (j - 1) + i - 1);
+    } else if (j < i) {
+        temp = 2 * (i * (i - 1) + j - 1);
     } else {
-        temp = i * i - 1;
+        temp = 2 * (i * i - 1);
     }
+
+    int val;
+    if (graph->arr[temp + 1] == 1) {
+        val = graph->arr[temp];
+    } else {
+        val = INT_MAX;
+    }
+
     *err = ESUCCESS;
-    int val = graph->arr[temp];
-    if (val >= 0) {
-        return val;
-    } else {
-        return -1;
-    }
+    return val;
 }
