@@ -160,3 +160,31 @@ int Pop_Edge(graph *graph, int i, int j, GRAPH_ERR *err) {
     *err = ESUCCESS;
     return val;
 }
+
+void Print(graph *graph, GRAPH_ERR *err) {
+
+    if (graph == NULL) {
+        fprintf(stderr, "Invalid argument: graph\n");
+        if (err != NULL)
+            *err = EINVARG;
+        return;
+    }
+
+    for (int i = 1; i <= graph->size; ++i) {
+        for (int j = 1; j <= graph->size; ++j) {
+            int temp;
+            if (i < j) {
+                temp = 2 * ((j - 1) * (j - 1) + i - 1);
+            } else if (j < i) {
+                temp = 2 * (i * (i - 1) + j - 1);
+            } else {
+                temp = 2 * (i * i - 1);
+            }
+            if (graph->arr[temp + 1] == 1) {
+                printf("(%d, %d) = %d\n", i, j, graph->arr[temp]);
+            }
+        }
+    }
+
+    *err = ESUCCESS;
+}
