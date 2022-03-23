@@ -87,6 +87,23 @@ int main() {
         else
             fprintf(stdout, "Test_3.7\t->\tPASSED\n");
     }
+
+    {
+
+        Print(NULL, &err);
+        if (err != EINVARG)
+            fprintf(stdout, "Test_4.1\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_4.1\t->\tPASSED\n");
+
+        Print(graph, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_4.2\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_4.2\t->\tPASSED\n");
+
+    }
+
     return 0;
 }
 
