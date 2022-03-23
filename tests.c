@@ -106,7 +106,6 @@ int main() {
         else
             fprintf(stdout, "Test_2.11\t->\tPASSED\n");
 
-
     }
 
 
@@ -233,8 +232,31 @@ int main() {
         else
             fprintf(stdout, "Test_6.2\t->\tPASSED\n");
 
-    }
+        Remove_Graph(graph2, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_6.3\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.3\t->\tPASSED\n");
 
+        Remove_Graph(graph3, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_6.4\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.4\t->\tPASSED\n");
+
+        Remove_Graph(graph4, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_6.5\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.5\t->\tPASSED\n");
+
+        Remove_Graph(graph5, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_6.6\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.6\t->\tPASSED\n");
+
+    }
     return 0;
 }
 
