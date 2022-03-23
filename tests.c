@@ -104,6 +104,51 @@ int main() {
 
     }
 
+
+    {
+
+        Print_Shortest_Paths(NULL, 2, &err);
+        if (err != EINVARG)
+            fprintf(stdout, "Test_5.1\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_5.1\t->\tPASSED\n");
+
+        Print_Shortest_Paths(graph, 4, &err);
+        if (err != EINVARG)
+            fprintf(stdout, "Test_5.2\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_5.2\t->\tPASSED\n");
+
+        Print_Shortest_Paths(graph, -1, &err);
+        if (err != EINVARG)
+            fprintf(stdout, "Test_5.3\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_5.3\t->\tPASSED\n");
+
+        Print_Shortest_Paths(graph, 2, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_5.4\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_5.4\t->\tPASSED\n");
+
+    }
+
+    {
+
+        Remove_Graph(NULL, &err);
+        if (err != EINVARG)
+            fprintf(stdout, "Test_6.1\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.1\t->\tPASSED\n");
+
+        Remove_Graph(graph, &err);
+        if (err == EINVARG)
+            fprintf(stdout, "Test_6.2\t->\tFAILED\n");
+        else
+            fprintf(stdout, "Test_6.2\t->\tPASSED\n");
+
+    }
+
     return 0;
 }
 
