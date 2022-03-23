@@ -188,3 +188,120 @@ void Print(graph *graph, GRAPH_ERR *err) {
 
     *err = ESUCCESS;
 }
+
+
+void Print_Shortest_Paths(graph *graph, int vertex, GRAPH_ERR *err){
+
+    if (graph == NULL || graph->size == 0 || graph->size == 1) {
+        fprintf(stderr, "Invalid argument: graph\n");
+        if (err != NULL)
+            *err = EINVARG;
+        return;
+    }
+
+    if (vertex <= 0 || vertex > graph->size) {
+        fprintf(stderr, "Invalid argument: vertex\n");
+        if (err != NULL)
+            *err = EINVARG;
+        return;
+    }
+
+    int *edges, size = 0;
+    edges = (int *)malloc(0 * (sizeof(int)));
+
+    if (edges == NULL) {
+        fprintf(stderr, "Not enough memory\n");
+        if (err != NULL) {
+            *err = EMALLOC;
+        }
+        return;
+    }
+
+    for (int i = 1; i <= graph->size; ++i) {
+        for (int j = 1; j <= graph->size; ++j) {
+            int temp;
+            if (i < j) {
+                temp = 2 * ((j - 1) * (j - 1) + i - 1);
+            } else if (j < i) {
+                temp = 2 * (i * (i - 1) + j - 1);
+            } else {
+                temp = 2 * (i * i - 1);
+            }
+            if (graph->arr[temp + 1] == 1) {
+                edges = (int *) realloc(edges,  (3 + size) * sizeof(int));
+
+                if (edges == NULL) {
+                    fprintf(stderr, "Not enough memory\n");
+                    if (err != NULL) {
+                        *err = EMALLOC;
+                    }
+                    return;
+                }
+                    edges[size] = i;
+                    edges[size + 1] = j;
+                    edges[size + 2] = graph->arr[temp];
+                    size += 3;
+            }
+        }
+    }
+
+    int *array;
+    array = (int *)malloc((graph->size + 1) * (sizeof(int)));
+
+    if (array == NULL) {
+        fprintf(stderr, "Not enough memory\n");
+        if(err != NULL) {
+            *err = EMALLOC;
+        }
+        return;
+    }
+
+    array[0] = 0;
+    for (int i = 1; i <= graph->size; ++i) {
+        array[i] = (INT_MAX - 1) / 2;
+    }
+    array[vertex] = 0;
+
+    for (int i = 0; i < graph->size - 1; ++i) {
+        for (int j = 0; j < size / 3; ++j) {
+            int n = edges[3 * j], m = edges[3 * j + 1], buff = edges[3 * j + 2];
+            if (n == m && buff < 0) {
+                fprintf(stderr, "Invalid argument: graph (graph cannot contain negative loops)\n");
+                if (err != NULL)
+                    *err = EINVARG;
+                return;
+            } else {
+                if (array[m] > array[n] + buff) {
+                    array[m] = array[n] + buff;
+                }
+            }
+        }
+    }
+
+    int indicator = 0;
+
+    for (int j = 0; j < size / 3; ++j) {
+        int n = edges[3 * j], m = edges[3 * j + 1], buff = edges[3 * j + 2];
+        if (array[m] > array[n] + buff) {
+            indicator = 1;
+            break;
+        }
+    }
+
+    if (indicator) {
+        printf("There's a negative length cycle");
+    } else {
+        for (int i = 1; i <= graph->size; ++i) {
+            if (vertex == i) {
+                continue;
+            } else if (array[i] < ((INT_MAX - 1) / 2 - 1) / 2) {
+                printf("Path from %d to %d is at least %d\n", vertex, i, array[i]);
+            } else {
+                printf("Path from %d to %d doesn't exist\n", vertex, i);
+            }
+        }
+    }
+    *err = ESUCCESS;
+    free(edges);
+    free(array);
+}
