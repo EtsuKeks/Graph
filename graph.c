@@ -214,7 +214,8 @@ void Print_Shortest_Paths(graph *graph, int vertex, GRAPH_ERR *err){
         if (err != NULL) {
             *err = EMALLOC;
         }
-        return;
+    	free(edges);
+	    return;
     }
 
     for (int i = 1; i <= graph->size; ++i) {
@@ -235,7 +236,8 @@ void Print_Shortest_Paths(graph *graph, int vertex, GRAPH_ERR *err){
                     if (err != NULL) {
                         *err = EMALLOC;
                     }
-                    return;
+                    free(edges);
+					return;
                 }
                     edges[size] = i;
                     edges[size + 1] = j;
@@ -253,6 +255,8 @@ void Print_Shortest_Paths(graph *graph, int vertex, GRAPH_ERR *err){
         if(err != NULL) {
             *err = EMALLOC;
         }
+		free(edges);
+		free(array);
         return;
     }
 
@@ -269,7 +273,9 @@ void Print_Shortest_Paths(graph *graph, int vertex, GRAPH_ERR *err){
                 fprintf(stderr, "Invalid argument: graph (graph cannot contain negative loops)\n");
                 if (err != NULL)
                     *err = EINVARG;
-                return;
+                free(edges);
+				free(array);
+				return;
             } else {
                 if (array[m] > array[n] + buff) {
                     array[m] = array[n] + buff;

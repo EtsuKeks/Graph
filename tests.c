@@ -5,13 +5,11 @@ int main() {
     graph *graph = NULL, *graph2 = NULL, *graph3 = NULL, *graph4 = NULL, *graph5 = NULL;
     GRAPH_ERR err;
 
-    {
-
-        graph = Init_Graph(&err);
-        if (err == EMALLOC)
-            fprintf(stdout, "Test_1.1\t->\tFAILED\n");
-        else
-            fprintf(stdout, "Test_1.1\t->\tPASSED\n");
+    graph = Init_Graph(&err);
+	if (err == EMALLOC)
+        fprintf(stdout, "Test_1.1\t->\tFAILED\n");
+    else
+        fprintf(stdout, "Test_1.1\t->\tPASSED\n");
 
 	graph2 = Init_Graph(&err);
 	if (err == EMALLOC)
@@ -37,11 +35,8 @@ int main() {
 	else
 	    fprintf(stdout, "Test_1.5\t->\tPASSED\n");
 
-    }
-
-    {
-        Push_Edge(NULL, 1, 1, 1, &err);
-        if (err != EINVARG)
+    Push_Edge(NULL, 1, 1, 1, &err);
+    if (err != EINVARG)
             fprintf(stdout, "Test_2.1\t->\tFAILED\n");
         else
             fprintf(stdout, "Test_2.1\t->\tPASSED\n");
@@ -106,11 +101,6 @@ int main() {
         else
             fprintf(stdout, "Test_2.11\t->\tPASSED\n");
 
-    }
-
-
-    {
-
         Pop_Edge(NULL, 1, 1, &err);
         if (err != EINVARG)
             fprintf(stdout, "Test_3.1\t->\tFAILED\n");
@@ -159,10 +149,6 @@ int main() {
         else
             fprintf(stdout, "Test_3.8\t->\tPASSED\n");
 
-}
-
-    {
-
         Print(NULL, &err);
         if (err != EINVARG)
             fprintf(stdout, "Test_4.1\t->\tFAILED\n");
@@ -174,11 +160,6 @@ int main() {
             fprintf(stdout, "Test_4.2\t->\tFAILED\n");
         else
             fprintf(stdout, "Test_4.2\t->\tPASSED\n");
-
-    }
-
-
-    {
 
         Print_Shortest_Paths(NULL, 2, &err);
         if (err != EINVARG)
@@ -204,21 +185,17 @@ int main() {
         else
             fprintf(stdout, "Test_5.4\t->\tPASSED\n");
 
-        Print_Shortest_Paths(graph2, 1, &err);
+		Print_Shortest_Paths(graph2, 1, &err);
         if (err != EINVARG)
             fprintf(stdout, "Test_5.5\t->\tFAILED\n");
         else
-            fprintf(stdout, "Test_5.5\t->\tPASSED\n");
+            fprintf(stdout, "Test_5.5\t->\tPASSED\n"); 
 
         Print_Shortest_Paths(graph3, 2, &err);
         if (err == EINVARG)
             fprintf(stdout, "Test_5.6\t->\tFAILED\n");
         else
             fprintf(stdout, "Test_5.6\t->\tPASSED\n");
-
-    }
-
-    {
 
         Remove_Graph(NULL, &err);
         if (err != EINVARG)
@@ -256,7 +233,6 @@ int main() {
         else
             fprintf(stdout, "Test_6.6\t->\tPASSED\n");
 
-    }
     return 0;
 }
 
